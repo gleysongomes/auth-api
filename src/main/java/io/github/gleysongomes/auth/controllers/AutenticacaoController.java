@@ -43,7 +43,7 @@ public class AutenticacaoController {
 		BeanUtils.copyProperties(usuarioDto, usuarioModel);
 		usuarioModel.setStatusUsuario(StatusUsuario.ATIVO);
 		usuarioModel.setDtCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-		usuarioService.save(usuarioModel);
+		usuarioService.salvar(usuarioModel);
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioModel);
 	}
 }

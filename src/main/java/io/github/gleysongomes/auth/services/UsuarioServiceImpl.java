@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public void save(UsuarioModel usuarioModel) {
+	public void salvar(UsuarioModel usuarioModel) {
 		usuarioRepository.save(usuarioModel);
 	}
 
@@ -41,7 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Optional<UsuarioModel> findById(UUID cdUsuario) {
+	public Optional<UsuarioModel> buscar(UUID cdUsuario) {
 		return usuarioRepository.findById(cdUsuario);
 	}
 

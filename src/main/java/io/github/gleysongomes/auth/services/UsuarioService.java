@@ -15,11 +15,11 @@ public interface UsuarioService {
 
 	boolean existsByEmail(String email);
 
-	void save(UsuarioModel usuarioModel);
+	void salvar(UsuarioModel usuarioModel);
 
 	Page<UsuarioModel> listar(Specification<UsuarioModel> usuarioModelSpec, Pageable pageable);
 
-	Optional<UsuarioModel> findById(UUID cdUsuario);
+	Optional<UsuarioModel> buscar(UUID cdUsuario);
 
 	void excluir(UsuarioModel usuarioModel);
 

@@ -43,7 +43,7 @@ public class UsuarioController {
 
 	@GetMapping
 	public ResponseEntity<Page<UsuarioModel>> listar(SpecificationTemplate.UsuarioSpec usuarioSpec,
-			@PageableDefault(page = 0, size = 10, sort = "cdUsuario", direction = Sort.Direction.ASC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, sort = "dtCadastro", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<UsuarioModel> usuarioModelPage = usuarioService.listar(usuarioSpec, pageable);
 		if (!usuarioModelPage.isEmpty()) {
 			for (UsuarioModel usuarioModel : usuarioModelPage.toList()) {
@@ -57,7 +57,7 @@ public class UsuarioController {
 
 	@GetMapping("/{cdUsuario}")
 	public ResponseEntity<Object> buscar(@PathVariable(value = "cdUsuario") UUID cdUsuario) {
-		Optional<UsuarioModel> usuaurioModel = usuarioService.findById(cdUsuario);
+		Optional<UsuarioModel> usuaurioModel = usuarioService.buscar(cdUsuario);
 		if (!usuaurioModel.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
 		} else {
@@ -68,14 +68,14 @@ public class UsuarioController {
 	@PutMapping("/{cdUsuario}")
 	public ResponseEntity<Object> atualizar(@PathVariable(value = "cdUsuario") UUID cdUsuario,
 			@RequestBody @Validated(UsuarioDto.UsuarioView.UsuarioPut.class) @JsonView(UsuarioDto.UsuarioView.UsuarioPut.class) UsuarioDto usuarioDto) {
-		Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(cdUsuario);
+		Optional<UsuarioModel> usuarioModelOptional = usuarioService.buscar(cdUsuario);
 		if (!usuarioModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
 		} else {
 			var usuarioModel = usuarioModelOptional.get();
 			usuarioModel.setNome(usuarioDto.getNome());
 			usuarioModel.setDtAtualizacao(LocalDateTime.now(ZoneId.of("UTC")));
-			usuarioService.save(usuarioModel);
+			usuarioService.salvar(usuarioModel);
 			return ResponseEntity.status(HttpStatus.OK).body(usuarioModel);
 		}
 	}
@@ -83,7 +83,7 @@ public class UsuarioController {
 	@PutMapping("/{cdUsuario}/senha")
 	public ResponseEntity<Object> atualizarSenha(@PathVariable(value = "cdUsuario") UUID cdUsuario,
 			@RequestBody @Validated(UsuarioDto.UsuarioView.SenhaPut.class) @JsonView(UsuarioDto.UsuarioView.SenhaPut.class) UsuarioDto usuarioDto) {
-		Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(cdUsuario);
+		Optional<UsuarioModel> usuarioModelOptional = usuarioService.buscar(cdUsuario);
 		if (!usuarioModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
 		} else if (!usuarioModelOptional.get().getSenha().equals(usuarioDto.getSenha())) {
@@ -92,14 +92,14 @@ public class UsuarioController {
 			var usuarioModel = usuarioModelOptional.get();
 			usuarioModel.setSenha(usuarioDto.getNovaSenha());
 			usuarioModel.setDtAtualizacao(LocalDateTime.now(ZoneId.of("UTC")));
-			usuarioService.save(usuarioModel);
+			usuarioService.salvar(usuarioModel);
 			return ResponseEntity.status(HttpStatus.OK).body("A senha foi atualizada.");
 		}
 	}
 
 	@DeleteMapping("/{cdUsuario}")
 	public ResponseEntity<Object> excluir(@PathVariable(value = "cdUsuario") UUID cdUsuario) {
-		Optional<UsuarioModel> usuarioModel = usuarioService.findById(cdUsuario);
+		Optional<UsuarioModel> usuarioModel = usuarioService.buscar(cdUsuario);
 		if (!usuarioModel.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
 		} else {
